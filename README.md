@@ -1,14 +1,12 @@
 Jon-Cohen-Code-Sample
 =====================
 
-Matlab and shell script code samples related to Besov image denoising
+Matlab and C++ code samples.
 
-The important files are BesovChambollePock.m, findMus.m and decomp.sh
+The important files in the Besov Denoising folder are BesovChambollePock.m and findMus.m
 
-BesovChambollePock is the entry point for Besov image denoising as described in the upcoming paper "Pointwise Image Denoising in Besov Spaces" by Buzzerd, Chambolle, Cohen, Levine, and Lucier.  
+besovChambollePock is the entry point for Besov image denoising as described in the upcoming paper "Pointwise Image Denoising in Besov Spaces" by Buzzerd, Chambolle, Cohen, Levine, and Lucier.  A test image, girl-noisy-16.pgm is included, and the default paramters for the function are fairly suitable for that image. 
 
-findMus.m is the implementation of the algorithm I contributed to the project.  It projects a sequence of vector fields onto the unit norm ball in the dual to the function space B^1_inf(L1) by finding the root of an implicity defined function mapping a KKT variable, nu, to a sequence of limiters, mu.  This algorithm runs in log time, whereas the previous algorithm used when I entered the project ran in quadratic time, and switching in this algorithm cut our running time from about 10 hours to about 30 seconds, depending on image size. 
+findMus.m is the implementation of the algorithm I contributed to the project.It projects a sequence of vector fields onto the unit norm ball in the dual to the function space B^1_inf(L1) in O(j*log N) time, where j is the number of image scales being considered and N is the number of pixels in the image.  This is opposed to the algorithm being used when I first started on the project which ran in O(j*N^2) time. 
 
-decomp.sh is a shell script I wrote for testing the image denoising and related image decomposition algorithms remotely, without having to keep a connection to Duquesne's cluster.  It asks the user for the testing parameters and writes a matlab script which calls a pre-written decomposition test script, using each of the parameters in turn.  The scripts are called using nohup to run in the background.
-
-The rest of the files are included so that these programs will run, and a test image, girl-noisy-16.pgm is included as well.
+The C++ project in the Minimum Spanning Tree folder are an implementation of Prim's Algorithm using an adjacency list and priority queue.  It was originally intended as a response to [this programming challenge](http://www.reddit.com/r/dailyprogrammer/comments/20cydp/14042014_challenge_152_hard_minimum_spanning_tree/) on the dailyprogrammer subreddit, but I decided to clean it up for use here, sticking more or less to the Google C++ coding standards.  The code was not submitted for the challenge so there is no cunfusion about whether or not the code is actually mine.  It has been tested to compile cleanly with the command g++ *.cpp --std=c++11 -stdlib=libc++ -Wall on Mac OSX (make sure it compiles on Ububntu as well) using gcc4.7, and takes a filename containing the proper input as an argument.  The file "challenge.txt" contains the challenge input from the original programming challenge on reddit.
