@@ -1,4 +1,4 @@
-function [out, div] = besovChambollePock(im, lambda, errBound)
+function out = besovChambollePock(im, lambda, errBound)
 %[OUT] = BESOVCHAMBOLLEPOCK(IM, LAMBDA, NOTIFY) denoises the noisy input
 %image by minimizing the functional ||out - im|| + lambda *
 %|out|(B^1_inf(L1)), as in Buzzerd, Chambolle, Cohen, Levine, and Lucier,
@@ -9,8 +9,7 @@ function [out, div] = besovChambollePock(im, lambda, errBound)
 %   im: noisy image to be cleaned.  It must be integer valued from 0 to 255
 %   lambda: unnormalized Lagrange multiplier.  Default is 12.
 %   errBound: Stopping criterion in the number of gray scales of squared
-%       error.  Default is .25.
-%
+%       error.  Default is .5
 %OUTPUTS:
 %   out: cleaned ouput image
 %
@@ -28,7 +27,7 @@ else
 end
 
 if nargin < 3
-    errBound = 0.25;
+    errBound = 0.5;
 end
 if nargin < 2
     lambda = 12;
@@ -48,7 +47,6 @@ hVert = 1/M;                            %-Grid Sizes
 hDiag = sqrt(hHorz^2 + hVert^2);        %/
 L = 3*pi/sqrt(hHorz*hVert);             % Operator norm of K
 
-n = ceil(17.2*lambda);          % A priori estimate on number of iterations
 lambda = sqrt(hHorz*hVert) * lambda;    % Normalized Lagrange Multiplier
 gamma = 1/lambda;                       % Constant of Uniform Convexity
 tau = 1024 / (gamma);                   % Primal Step Size
@@ -60,7 +58,7 @@ x0 = x;                                                     %Holds input image f
 xbar = x0;                                                  %Linear Extrapolation result used in Dual step
 y = zeros(M + 2*MAXSCALES, N + 2*MAXSCALES, 4, MAXSCALES);  %Dual variable
 
- %Convolution masks for computing 2nd gradient and divergence
+%Convolution masks for computing 2nd gradient and divergence
 mask = buildMask(MAXSCALES, hVert, hHorz, hDiag); 
 
 inIters = 10;
@@ -81,10 +79,9 @@ while err > errBound
         end
 
     % - Project onto the Besov dual-space unit ball - %
-    
         yMags = sqrt(sum(y .^ 2, 3));
         
-        % Sort the magnitudes, find limiters, and projecty to the dual unit ball %
+        % Sort the magnitudes, find limiters, and project to the dual unit ball %
         muj = sort(...
             reshape(yMags((MAXSCALES + 1):(end - MAXSCALES), ...
                           (MAXSCALES + 1):(end - MAXSCALES), 1:jmax), M*N, jmax), 'descend');
@@ -108,17 +105,14 @@ while err > errBound
                     (MAXSCALES + 1 - scale):(end - MAXSCALES + scale));
             end
         end
-    
+
         %Update extrapolation parameter 
-        theta = 1/sqrt(1 + 2*gamma*tau);
-        
-        %save old x in xbar for extrapolation step
+        theta = 1/sqrt(1 + 2*gamma*tau);     
         xbar = -theta * x;
         
         % Find new guess for output image %
         x = x - tau * padarray(div, 2*[MAXSCALES MAXSCALES], 'symmetric');
-        x = (x + tau * gamma * x0) ./ (1 + tau * gamma);
-        
+
         %Linearly extrapolate for next iteration %
         xbar = xbar + (1 + theta) * x;
         
