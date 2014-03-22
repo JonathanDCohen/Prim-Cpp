@@ -18,6 +18,9 @@ Edge::Edge(char node1, char node2, int weight) : nodes_{node1, node2} {
 	weight_ = weight;
 }
 
+//Ordering on edges is by weight, with node names breaking ties.
 bool operator< (Edge const &left, Edge const &right) {
-	return std::make_pair(left.GetWeight(), left.GetNodes()) < std::make_pair(right.GetWeight(), right.GetNodes());
+	auto left_as_pair = std::make_pair(left.GetWeight(), left.GetNodes());
+	auto right_as_pair = std::make_pair(right.GetWeight(), right.GetNodes());
+	return left_as_pair < right_as_pair;
 }

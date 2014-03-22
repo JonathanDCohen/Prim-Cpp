@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <sstream>
 #include <fstream>
+#include <stdexcept>
 #include "Edge.h"
 
 const int EXPECTED_NUM_INPUTS = 2, ADJACENCY_MATRIX_FILENAME_INPUT_NUMBER = 1;
@@ -41,6 +42,6 @@ public:
 };
 
 int ReadInputOrDie(int argc, char *argv[], AdjacencyList *adjacency);
-void ReadAdjacencyMatrixOrDie(int argc, char *argv[], int num_nodes, AdjacencyList *adjacency);
+void AddToEdgeList(char row, char col, std::string const &weight, std::vector<Edge> &edges_from_row);
 
 #endif

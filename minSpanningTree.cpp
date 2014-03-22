@@ -1,52 +1,43 @@
 #include "minSpanningTree.h"
 
+int main(int argc, char *argv[]) try {
+	AdjacencyList adjacency;
+	int num_nodes = ReadInputOrDie(argc, argv, &adjacency);
+
+	std::cout << "Graph read from file: \n";
+	for (auto begin = adjacency.begin(); begin != adjacency.end(); begin++) {
+		for (Edge edge : begin->second) {
+			auto nodes = edge.GetNodes();
+			//don't print duplicates
+			if (nodes[1] > nodes[0]) {
+				edge.Print();
+			}
+		}
+	}
+
+	std::cout << "Minimum Spanning Tree:\n";
+	SpanningTree mst(num_nodes, adjacency);
+	if (mst.BuildMinSpanningTree()) {
+		for (Edge edge : *mst.GetOptimalEdgeList()) {
+			edge.Print();
+		}
+	}
+	std::cout << "MST Weight: " << mst.GetWeight() << "\n";
+}
+catch (std::exception &e) {
+	std::cerr << "Error: " << e.what() << "\n";
+	return -1;
+} 
+catch (...) {
+	std::cerr << "unknown error\n";
+	return -1;
+}
+
 SpanningTree::SpanningTree(int num_nodes, AdjacencyList const &adjacency) : num_nodes_(num_nodes), adjacency_(adjacency) {
 	if (num_nodes <= 1) {
 		std::cerr << "Warning: empty spanning tree created.\n";
 	}
 	weight_ = 0;
-}
-
-EdgeSet const *SpanningTree::GetOptimalEdgeList() const {
-	if (edge_set_.empty()) {
-		std::cerr << "Warning: min spanning tree either hasn't been built or doesn't exist.  Returning empty set.\n";
-	} 
-	return &edge_set_;
-}
-
-int SpanningTree::GetWeight() const {
-	return weight_;
-}
-
-bool SpanningTree::SubtreeIncludesNode(char node) const {
-	return nodes_in_subtree_.find(node) != nodes_in_subtree_.end();
-}
-
-//must add to node set, edge set, and expand prospective new edges
-void SpanningTree::AddEdgeToSubtree(Edge const &edge, std::priority_queue<Edge> *edge_queue, EdgeSet *prospective_edge_set) {
-	edge_set_.insert(edge);
-	weight_ -= edge.GetWeight();
-
-	auto nodes = edge.GetNodes();
-	char toExpand = SubtreeIncludesNode(nodes[0]) ? nodes[1] : nodes[0];
-	nodes_in_subtree_.insert(toExpand);
-
-	for (Edge new_edge : adjacency_.find(toExpand)->second) {
-		if (prospective_edge_set->find(new_edge) == prospective_edge_set->end()) {
-			edge_queue->push(new_edge);
-			prospective_edge_set->insert(new_edge);
-		}
-	}
-}
-
-/* Since Prim's algorithm maintains a connected subtree of the graph, and a
- * tree has exactly one path from each node to each other node, if a prospective
- * edge is between two nodes already in the subtree, it is a second path between
- * those two nodes and so creates a cycle.
- */
-bool SpanningTree::MakesACycle(Edge const &prospective_edge) const {
-	auto nodes = prospective_edge.GetNodes();
-	return SubtreeIncludesNode(nodes[0]) && SubtreeIncludesNode(nodes[1]);
 }
 
 bool SpanningTree::BuildMinSpanningTree() {
@@ -86,8 +77,49 @@ bool SpanningTree::BuildMinSpanningTree() {
 	return true;
 }
 
+void SpanningTree::AddEdgeToSubtree(Edge const &edge, std::priority_queue<Edge> *edge_queue, EdgeSet *prospective_edge_set) {
+	edge_set_.insert(edge);
+	weight_ -= edge.GetWeight();
+
+	auto nodes = edge.GetNodes();
+	char toExpand = SubtreeIncludesNode(nodes[0]) ? nodes[1] : nodes[0];
+	nodes_in_subtree_.insert(toExpand);
+
+	for (Edge new_edge : adjacency_.find(toExpand)->second) {
+		if (prospective_edge_set->find(new_edge) == prospective_edge_set->end()) {
+			edge_queue->push(new_edge);
+			prospective_edge_set->insert(new_edge);
+		}
+	}
+}
+
+bool SpanningTree::SubtreeIncludesNode(char node) const {
+	return nodes_in_subtree_.find(node) != nodes_in_subtree_.end();
+}
+
+/* Since Prim's algorithm maintains a connected subtree of the graph, and a
+ * tree has exactly one path from each node to each other node, if a prospective
+ * edge is between two nodes already in the subtree, it is a second path between
+ * those two nodes and so creates a cycle.
+ */
+bool SpanningTree::MakesACycle(Edge const &prospective_edge) const {
+	auto nodes = prospective_edge.GetNodes();
+	return SubtreeIncludesNode(nodes[0]) && SubtreeIncludesNode(nodes[1]);
+}
+
 void AddToEdgeList(char row, char col, std::string const &weight, std::vector<Edge> &edges_from_row) {
 	edges_from_row.push_back(Edge(row, col, -std::stoi(weight)));
+}
+
+EdgeSet const *SpanningTree::GetOptimalEdgeList() const {
+	if (edge_set_.empty()) {
+		std::cerr << "Warning: min spanning tree either hasn't been built or doesn't exist.  Returning empty set.\n";
+	} 
+	return &edge_set_;
+}
+
+int SpanningTree::GetWeight() const {
+	return weight_;
 }
 
 int ReadInputOrDie(int argc, char *argv[], AdjacencyList *adjacency) {
