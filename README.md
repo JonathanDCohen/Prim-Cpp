@@ -1,4 +1,4 @@
-Jon-Cohen-Code-Sample
+Jonathan-Cohen-Code-Sample
 =====================
 
 C++ code sample.
