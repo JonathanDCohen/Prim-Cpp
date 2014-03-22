@@ -2,6 +2,7 @@
 #define EDGE_H
 #include <iostream>
 #include <vector>
+#include <stdexcept>
 
 class Edge {
 	std::vector<char> nodes_;

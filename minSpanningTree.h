@@ -32,7 +32,8 @@ class SpanningTree {
 	bool MakesACycle(Edge const &prospective_edge) const;
 	bool SubtreeIncludesNode(char node) const;
 	void AddEdgeToSubtree(Edge const &edge, std::priority_queue<Edge> *edge_queue, EdgeSet *prospective_edge_set);
-
+	void SpanningTree::AddToEdgeList(char row, char col, std::string const &weight, std::vector<Edge> &edges_from_row);
+	
 public:
 	SpanningTree(int num_nodes, AdjacencyList const &adjacency);
 

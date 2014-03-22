@@ -107,7 +107,7 @@ bool SpanningTree::MakesACycle(Edge const &prospective_edge) const {
 	return SubtreeIncludesNode(nodes[0]) && SubtreeIncludesNode(nodes[1]);
 }
 
-void AddToEdgeList(char row, char col, std::string const &weight, std::vector<Edge> &edges_from_row) {
+void SpanningTree::AddToEdgeList(char row, char col, std::string const &weight, std::vector<Edge> &edges_from_row) {
 	edges_from_row.push_back(Edge(row, col, -std::stoi(weight)));
 }
 
