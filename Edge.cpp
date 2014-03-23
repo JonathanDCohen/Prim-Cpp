@@ -7,8 +7,8 @@ int Edge::GetWeight() const {
 	return weight_;
 }
 
-void Edge::Print() const {
-	std::cout << nodes_[0] << "-- " << (weight_ < 0 ? -weight_ : weight_) << " --" << nodes_[1] << "\n";
+void Edge::Print(bool negative_edge) const {
+	std::cout << nodes_[0] << "-- " << (negative_edge ? -weight_ : weight_) << " --" << nodes_[1] << "\n";
 }
 
 Edge::Edge(char node1, char node2, int weight) : nodes_{node1, node2} {

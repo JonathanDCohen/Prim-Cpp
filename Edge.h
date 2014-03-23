@@ -12,7 +12,9 @@ public:
 	// will only ever have two elements, so this is a cheap copy
 	std::vector<char> GetNodes() const; 
 	int GetWeight() const;
-	void Print() const;
+	//true is the default because C++ priority queues are max queues, so 
+	//edge weights need to be negative for min spanning trees.
+	void Print(bool negative_edge = true) const;
 	Edge(char node1, char node2, int weight);
 };
 
