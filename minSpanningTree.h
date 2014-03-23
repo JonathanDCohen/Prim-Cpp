@@ -2,15 +2,12 @@
 #define MIN_SPANNING_TREE_H
 
 #include <iostream>
-#include <algorithm>
 #include <set>
-#include <functional>
 #include <map>
 #include <string>
 #include <vector>
 #include <queue>
 #include <utility>
-#include <stdlib.h>
 #include <sstream>
 #include <fstream>
 #include <stdexcept>
@@ -32,7 +29,6 @@ class SpanningTree {
 	bool MakesACycle(Edge const &prospective_edge) const;
 	bool SubtreeIncludesNode(char node) const;
 	void AddEdgeToSubtree(Edge const &edge, std::priority_queue<Edge> *edge_queue, EdgeSet *prospective_edge_set);
-	void SpanningTree::AddToEdgeList(char row, char col, std::string const &weight, std::vector<Edge> &edges_from_row);
 	
 public:
 	SpanningTree(int num_nodes, AdjacencyList const &adjacency);

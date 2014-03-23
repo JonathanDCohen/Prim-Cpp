@@ -107,10 +107,6 @@ bool SpanningTree::MakesACycle(Edge const &prospective_edge) const {
 	return SubtreeIncludesNode(nodes[0]) && SubtreeIncludesNode(nodes[1]);
 }
 
-void SpanningTree::AddToEdgeList(char row, char col, std::string const &weight, std::vector<Edge> &edges_from_row) {
-	edges_from_row.push_back(Edge(row, col, -std::stoi(weight)));
-}
-
 EdgeSet const *SpanningTree::GetOptimalEdgeList() const {
 	if (edge_set_.empty()) {
 		std::cerr << "Warning: min spanning tree either hasn't been built or doesn't exist.  Returning empty set.\n";
@@ -120,6 +116,10 @@ EdgeSet const *SpanningTree::GetOptimalEdgeList() const {
 
 int SpanningTree::GetWeight() const {
 	return weight_;
+}
+
+void AddToEdgeList(char row, char col, std::string const &weight, std::vector<Edge> &edges_from_row) {
+	edges_from_row.push_back(Edge(row, col, -std::stoi(weight)));
 }
 
 int ReadInputOrDie(int argc, char *argv[], AdjacencyList *adjacency) {
